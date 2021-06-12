@@ -1,8 +1,6 @@
 from PyQt5.QtWidgets import QMainWindow, QLabel, QWidget, QApplication, QGridLayout, QPushButton, QLineEdit, QDialog, QFileDialog, QButtonGroup
 from PyQt5.QtGui import QPixmap
 
-from tkinter import filedialog, Tk
-
 import os
 
 import shutil

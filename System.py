@@ -50,7 +50,8 @@ class OptionWindow(QDialog):
 		else :
 			self.now_image_path = self.dir_path+'/'+self.file_list_img[self.image_number]
 			width, height = Image.open(self.now_image_path).size
-			width, height = self.Image_Size_Ratio(width, height)
+			if width > 950 or height > 950 :
+				width, height = self.Image_Size_Ratio(width, height)
 			self.image_label.setPixmap(QPixmap(self.now_image_path).scaled(width,height))
 
 		self.show()
@@ -69,12 +70,16 @@ class OptionWindow(QDialog):
 
 				self.image_number += 1
 
-				self.now_image_path = self.dir_path+'/'+self.file_list_img[self.image_number]
-				width, height = Image.open(self.now_image_path).size
-				width, height = self.Image_Size_Ratio(width, height)
-				self.image_label.setPixmap(QPixmap(self.now_image_path).scaled(width, height))
-
-				print(self.folder_list[id],"클릭!")
+				try :
+					self.now_image_path = self.dir_path+'/'+self.file_list_img[self.image_number]
+					width, height = Image.open(self.now_image_path).size
+					if width > 950 or height > 950 :
+						width, height = self.Image_Size_Ratio(width, height)
+					self.image_label.setPixmap(QPixmap(self.now_image_path).scaled(width, height))
+				except IndexError as e:
+					self.image_label.setText('Image file not found')
+					print(e)
+					
 
 	def Remove_Data(self):
 		os.remove(self.now_image_path)

@@ -94,16 +94,16 @@ class OptionWindow(QDialog):
 	def Image_Size_Ratio(self,width,height):
 		if width-height > 0 :
 			big_bee = round(width/height,2)
-			small_bee = int(950 / big_bee)
-			big_bee = int(small_bee * big_bee)
+			small_bee = 950 / big_bee
+			big_bee = small_bee * big_bee
 
-			return big_bee, small_bee
+			return int(big_bee), int(small_bee)
 		else :
 			big_bee = round(height/width,2)
-			small_bee = int(950 / big_bee)
-			big_bee = int(small_bee * big_bee)
+			small_bee = 950 / big_bee
+			big_bee = small_bee * big_bee
 
-			return small_bee, big_bee	
+			return int(small_bee), int(big_bee)
 
 
 class Ui_MainWindow(QWidget):

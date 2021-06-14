@@ -86,21 +86,25 @@ class OptionWindow(QDialog):
 
 		self.image_number += 1
 
-		self.now_image_path = self.dir_path+'/'+self.file_list_img[self.image_number]
-		width, height = Image.open(self.now_image_path).size
-		if width > 950 or height > 950 :
-			width, height = self.Image_Size_Ratio(width, height)
-		self.image_label.setPixmap(QPixmap(self.now_image_path).scaled(width, height))
-
+		try : 
+			self.now_image_path = self.dir_path+'/'+self.file_list_img[self.image_number]
+			width, height = Image.open(self.now_image_path).size
+			if width > 950 or height > 950 :
+				width, height = self.Image_Size_Ratio(width, height)
+			self.image_label.setPixmap(QPixmap(self.now_image_path).scaled(width, height))
+		except IndexError as e:
+					self.image_label.setText('Image file not found')
+					print(e)
+					
 	def Image_Size_Ratio(self,width,height):
 		if width-height > 0 :
-			big_bee = round(width/height,2)
+			big_bee = width/height
 			small_bee = 950 / big_bee
 			big_bee = small_bee * big_bee
 
 			return int(big_bee), int(small_bee)
 		else :
-			big_bee = round(height/width,2)
+			big_bee = height/width
 			small_bee = 950 / big_bee
 			big_bee = small_bee * big_bee
 

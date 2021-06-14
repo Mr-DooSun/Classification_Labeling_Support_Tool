@@ -1,0 +1,1 @@
+pyinstaller -n "Data Classificater" --noconsole --clean --onefile System.py

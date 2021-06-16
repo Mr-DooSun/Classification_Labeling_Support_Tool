@@ -7,6 +7,10 @@ import shutil
 
 from PIL import Image
 
+import threading
+
+from pynput.keyboard import Listener, Key
+
 class OptionWindow(QDialog):
 	def __init__(self,parent):
 		super(OptionWindow,self).__init__(parent)
@@ -54,6 +58,8 @@ class OptionWindow(QDialog):
 				width, height = self.Image_Size_Ratio(width, height)
 			self.image_label.setPixmap(QPixmap(self.now_image_path).scaled(width,height))
 
+		self.KeyClickEvent_Thread()
+
 		self.show()
 
 	def Create_Classification_Dir(self,dir_path,folder):	
@@ -95,7 +101,7 @@ class OptionWindow(QDialog):
 		except IndexError as e:
 					self.image_label.setText('Image file not found')
 					print(e)
-					
+
 	def Image_Size_Ratio(self,width,height):
 		if width-height > 0 :
 			big_bee = width/height
@@ -109,6 +115,23 @@ class OptionWindow(QDialog):
 			big_bee = small_bee * big_bee
 
 			return int(small_bee), int(big_bee)
+
+	def on_press(self,key):  # The function that's called when a key is pressed
+		if key == Key.delete:
+			print('삭제')
+
+	def on_release(self,key):  # The function that's called when a key is released
+		if key == Key.delete:
+			self.Remove_Data()
+
+	def KeyClickEvent(self):
+		with Listener(on_press=self.on_press, on_release=self.on_release) as listener:  # Create an instance of Listener
+			listener.join()  # Join the listener thread to the main thread to keep waiting for keys
+
+	def KeyClickEvent_Thread(self):
+		thread=threading.Thread(target=self.KeyClickEvent)
+		thread.daemon=True #프로그램 종료시 프로세스도 함께 종료 (백그라운드 재생 X)
+		thread.start()
 
 
 class Ui_MainWindow(QWidget):

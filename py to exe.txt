@@ -1,1 +1,5 @@
 pyinstaller -n "Data Classification" --noconsole --clean --onefile System.py
+
+Failed to execute script System 에러가 뜰경우==========
+pynput 버젼 의심
+pip install pynput==1.6.8 로 다운그레이드 또는 업그레이드

@@ -117,23 +117,24 @@ class OptionWindow(QDialog):
 			print(e)
 	
 	def Move_Hold(self):
-		try :
-			shutil.move(self.now_image_path,self.dir_path+'/보류')
-		except :
-			print('"보류" folder is not found')
-			return None
+		if os.path.isdir(self.dir_path+'/보류'):
+			try :
+				shutil.move(self.now_image_path,self.dir_path+'/보류')
+			except :
+				print('"보류" folder is not found')
+				return None
 
-		self.image_number += 1
-		
-		try : 
-			self.now_image_path = self.dir_path+'/'+self.file_list_img[self.image_number]
-			width, height = Image.open(self.now_image_path).size
-			if width > 950 or height > 950 :
-				width, height = self.Image_Size_Ratio(width, height)
-			self.image_label.setPixmap(QPixmap(self.now_image_path).scaled(width, height))
-		except IndexError as e:
-			self.image_label.setText('Image file not found')
-			print(e)
+			self.image_number += 1
+			
+			try : 
+				self.now_image_path = self.dir_path+'/'+self.file_list_img[self.image_number]
+				width, height = Image.open(self.now_image_path).size
+				if width > 950 or height > 950 :
+					width, height = self.Image_Size_Ratio(width, height)
+				self.image_label.setPixmap(QPixmap(self.now_image_path).scaled(width, height))
+			except IndexError as e:
+				self.image_label.setText('Image file not found')
+				print(e)
 
 	def on_press(self,key):  # The function that's called when a key is pressed
 		if key == Key.end:

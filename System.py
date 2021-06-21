@@ -61,12 +61,26 @@ class OptionWindow(QDialog):
 		self.KeyClickEvent_Thread()
 
 		self.show()
+	
+	def Image_Size_Ratio(self,width,height):
+		if width-height > 0 :
+			big_bee = width/height
+			small_bee = 950 / big_bee
+			big_bee = small_bee * big_bee
+
+			return int(big_bee), int(small_bee)
+		else :
+			big_bee = height/width
+			small_bee = 950 / big_bee
+			big_bee = small_bee * big_bee
+
+			return int(small_bee), int(big_bee)
 
 	def Create_Classification_Dir(self,dir_path,folder):	
 		try :
 			os.mkdir(dir_path+'/'+folder)
 		except FileExistsError as e :
-			print('The folder is already created.')
+			print(folder + ' folder is already created.')
 
 	def Move_Data(self,id):
 		for btn in self.btnGroup.buttons():
@@ -99,37 +113,50 @@ class OptionWindow(QDialog):
 				width, height = self.Image_Size_Ratio(width, height)
 			self.image_label.setPixmap(QPixmap(self.now_image_path).scaled(width, height))
 		except IndexError as e:
-					self.image_label.setText('Image file not found')
-					print(e)
+			self.image_label.setText('Image file not found')
+			print(e)
+	
+	def Move_Hold(self):
+		try :
+			shutil.move(self.now_image_path,self.dir_path+'/보류')
+		except :
+			print('"보류" folder is not found')
+			return None
 
-	def Image_Size_Ratio(self,width,height):
-		if width-height > 0 :
-			big_bee = width/height
-			small_bee = 950 / big_bee
-			big_bee = small_bee * big_bee
-
-			return int(big_bee), int(small_bee)
-		else :
-			big_bee = height/width
-			small_bee = 950 / big_bee
-			big_bee = small_bee * big_bee
-
-			return int(small_bee), int(big_bee)
+		self.image_number += 1
+		
+		try : 
+			self.now_image_path = self.dir_path+'/'+self.file_list_img[self.image_number]
+			width, height = Image.open(self.now_image_path).size
+			if width > 950 or height > 950 :
+				width, height = self.Image_Size_Ratio(width, height)
+			self.image_label.setPixmap(QPixmap(self.now_image_path).scaled(width, height))
+		except IndexError as e:
+			self.image_label.setText('Image file not found')
+			print(e)
 
 	def on_press(self,key):  # The function that's called when a key is pressed
-		if key == Key.delete:
+		if key == Key.end:
 			print('삭제')
+		elif key == Key.home:
+			print('보류')
+		else :
+			pass
 
 	def on_release(self,key):  # The function that's called when a key is released
-		if key == Key.delete:
+		if key == Key.end:
 			self.Remove_Data()
+		elif key == Key.home:
+			self.Move_Hold()
+		else :
+			pass
 
 	def KeyClickEvent(self):
 		with Listener(on_press=self.on_press, on_release=self.on_release) as listener:  # Create an instance of Listener
 			listener.join()  # Join the listener thread to the main thread to keep waiting for keys
 
 	def KeyClickEvent_Thread(self):
-		thread=threading.Thread(target=self.KeyClickEvent)
+		thread = threading.Thread(target=self.KeyClickEvent)
 		thread.daemon=True #프로그램 종료시 프로세스도 함께 종료 (백그라운드 재생 X)
 		thread.start()
 
@@ -137,8 +164,8 @@ class OptionWindow(QDialog):
 class Ui_MainWindow(QWidget):
 	def __init__(self):
 		super().__init__()
-
-		self.dir_path = 'C:/'
+		
+		self.dir_path=''
 
 		self.setWindowTitle("Do Not Name")
 		# self.resize(600, 500)
@@ -146,7 +173,7 @@ class Ui_MainWindow(QWidget):
 		self.grid = QGridLayout()
 		self.setLayout(self.grid)
 
-		self.dir_path_label = QLabel('C:/',self)
+		self.dir_path_label = QLabel('',self)
 		self.choose_dir_button = QPushButton('...',self)
 		self.choose_dir_button.clicked.connect(self.Choose_Dir_Path)
 

@@ -191,7 +191,7 @@ class Ui_MainWindow(QWidget):
 	def Start_Button_Event(self):
 		self.folder_list = self.input_directory.text().split(",")
 		self.folder_list = [folder.strip() for folder in self.folder_list]
-		if len(self.folder_list) > 1 and self.dir_path is not '' :
+		if len(self.folder_list) > 0 and self.dir_path is not '' :
 			main_ui = OptionWindow(self)
 			main_ui.main(self.dir_path,self.folder_list)
 

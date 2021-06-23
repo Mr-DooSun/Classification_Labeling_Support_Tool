@@ -102,7 +102,11 @@ class OptionWindow(QDialog):
 					
 
 	def Remove_Data(self):
-		os.remove(self.now_image_path)
+		try:
+			os.remove(self.now_image_path)
+		except FileNotFoundError as e:
+			print(e)
+
 
 		self.image_number += 1
 

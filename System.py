@@ -120,7 +120,7 @@ class OptionWindow(QDialog):
 		self.Show_Next_Image()
 	
 	# 데이터 보류
-	def Move_Hold(self):
+	def Hold_Data(self):
 		if os.path.isdir(self.dir_path+'/보류'):
 			try :
 				shutil.move(self.now_image_path,self.dir_path+'/보류')
@@ -147,6 +147,17 @@ class OptionWindow(QDialog):
 				shutil.copy2(self.now_image_path,self.after_image_path)
 
 				self.Show_Next_Image()
+	
+	# 데이터 보류 (클릭 이벤트용)
+	def Copy_Data_Event(self):
+		if os.path.isdir(self.dir_path+'/보류'):
+			try :
+				shutil.copy2(self.now_image_path,self.dir_path+'/보류')
+			except :
+				print('"보류" folder is not found')
+				return None
+
+			self.Show_Next_Image()
 
 	def on_release(self,key):  # The function that's called when a key is released
 		if key == Key.end:
@@ -158,11 +169,11 @@ class OptionWindow(QDialog):
 				print('다음')
 
 		elif key == Key.home:
-			if not self.move_remove :
-				self.Move_Hold()
+			if self.move_remove :
+				self.Hold_Data()
 				print('보류')
 			else :
-				self.Copy_Data()
+				self.Copy_Data_Event()
 				print('복사')
 		else :
 			pass

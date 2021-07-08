@@ -11,15 +11,18 @@ import threading
 
 from pynput.keyboard import Listener, Key
 
+# 서브 윈도우
 class OptionWindow(QDialog):
 	def __init__(self,parent):
 		super(OptionWindow,self).__init__(parent)
 		self.setWindowTitle("Do Not Name")
 		self.resize(950, 950)
 	
+	# 서브 윈도우가 종료되면 키보드 입력 이벤트 중지
 	def closeEvent(self, event):
 		self.listener.stop()
 
+	# 레이아웃 구성
 	def main(self,dir_path,folder_list,move_remove):
 		self.move_remove = move_remove
 		self.dir_path = dir_path
@@ -76,6 +79,7 @@ class OptionWindow(QDialog):
 
 		self.show()
 	
+	# 이미지 비율 조정 (큰 이미지 비율에 맞게 축소)
 	def Image_Size_Ratio(self,width,height):
 		if width-height > 0 :
 			big_bee = width/height
@@ -159,6 +163,7 @@ class OptionWindow(QDialog):
 
 			self.Show_Next_Image()
 
+	# 키보드 키가 눌러진 후 올라올 경우
 	def on_release(self,key):  # The function that's called when a key is released
 		if key == Key.end:
 			if self.move_remove :
@@ -177,19 +182,22 @@ class OptionWindow(QDialog):
 				print('복사')
 		else :
 			pass
-
+	
+	# 키보드 클릭 이벤트
 	def KeyClickEvent(self):
 		with Listener(on_release=self.on_release) as self.listener:  # Create an instance of Listener
 			self.listener.join()  # Join the listener thread to the main thread to keep waiting for keys
 
+	# 키보드 클릭 이벤트 상시 동작 (서브 윈도우가 종료될 경우 같이 종료)
 	def KeyClickEvent_Thread(self):
 		thread = threading.Thread(target=self.KeyClickEvent)
 		thread.daemon=True #프로그램 종료시 프로세스도 함께 종료 (백그라운드 재생 X)
 		thread.start()
 		thread.do_run = False
 
-
+# 메인 윈도우
 class Ui_MainWindow(QWidget):
+	# 레이아웃 구성
 	def __init__(self):
 		super().__init__()
 		
@@ -226,6 +234,7 @@ class Ui_MainWindow(QWidget):
 
 		self.show()
 
+	# Start 버튼 이벤트
 	def Start_Button_Event(self):
 		self.folder_list = self.input_directory.text().split(",")
 		self.folder_list = [folder.strip() for folder in self.folder_list]
@@ -233,6 +242,7 @@ class Ui_MainWindow(QWidget):
 			main_ui = OptionWindow(self)
 			main_ui.main(self.dir_path,self.folder_list,self.rbtn1.isChecked())
 
+	# 폴더 경로를 가져오는 함수
 	def Choose_Dir_Path(self):
 		self.dir_path = QFileDialog.getExistingDirectory(self, 'Select Folder')
 		self.dir_path_label.setText(self.dir_path)

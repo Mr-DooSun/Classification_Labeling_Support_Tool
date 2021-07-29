@@ -1,1 +1,1 @@
-# Labeling_Image_Datasets
+# Image Datasets Classification Program
